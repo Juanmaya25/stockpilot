@@ -85,6 +85,11 @@ npm install
 npm run dev                 # http://localhost:3001
 ```
 
+## 🌐 Deploy
+
+- **Database + API** → [Render](https://render.com) Blueprint: New → Blueprint → pick this repo (`render.yaml` provisions PostgreSQL + the Dockerized API). Set `GROQ_API_KEY` and `WEB_ORIGIN` in the dashboard.
+- **Frontend** → [Vercel](https://vercel.com): import the repo, set root directory to `apps/web` and env `NEXT_PUBLIC_API_URL` to your Render API URL.
+
 ## 🗺️ Roadmap
 
 - [x] Project foundation, multi-tenant DB schema, Docker, CI
