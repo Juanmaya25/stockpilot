@@ -60,15 +60,17 @@ export default function ProductosPage() {
   }
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <header className="flex items-center justify-between mb-6">
+    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+      <header className="flex items-center justify-between mb-6 in">
         <div>
-          <h1 className="text-2xl font-bold">Productos</h1>
-          <p className="text-slate-500">{products.length} en catálogo</p>
+          <h1 className="font-display text-3xl font-semibold text-white">
+            Productos
+          </h1>
+          <p className="text-slate-400 mt-1">{products.length} en catálogo</p>
         </div>
         <button
           onClick={() => setShowForm((s) => !s)}
-          className="flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white font-medium px-4 py-2 transition"
+          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950 font-semibold px-4 py-2.5 hover:opacity-90 transition"
         >
           <Plus className="size-4" /> Nuevo producto
         </button>
@@ -77,51 +79,51 @@ export default function ProductosPage() {
       {showForm && (
         <form
           onSubmit={create}
-          className="bg-white rounded-2xl border border-slate-200 p-5 mb-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          className="glass rounded-2xl p-5 mb-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 in"
         >
-          <Input label="Nombre" value={form.name} onChange={set('name')} />
-          <Input label="SKU" value={form.sku} onChange={set('sku')} />
-          <Input label="Precio costo" type="number" value={form.costPrice} onChange={set('costPrice')} />
-          <Input label="Precio venta" type="number" value={form.salePrice} onChange={set('salePrice')} />
-          <Input label="Stock inicial" type="number" value={form.stock} onChange={set('stock')} />
-          <Input label="Stock mínimo" type="number" value={form.minStock} onChange={set('minStock')} />
-          <div className="flex items-end gap-2 lg:col-span-3">
+          <Field label="Nombre" value={form.name} onChange={set('name')} />
+          <Field label="SKU" value={form.sku} onChange={set('sku')} />
+          <Field label="Precio costo" type="number" value={form.costPrice} onChange={set('costPrice')} />
+          <Field label="Precio venta" type="number" value={form.salePrice} onChange={set('salePrice')} />
+          <Field label="Stock inicial" type="number" value={form.stock} onChange={set('stock')} />
+          <Field label="Stock mínimo" type="number" value={form.minStock} onChange={set('minStock')} />
+          <div className="flex items-center gap-2 lg:col-span-3">
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white font-medium px-4 py-2 disabled:opacity-60"
+              className="rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-semibold px-4 py-2 disabled:opacity-60"
             >
               {saving ? 'Guardando…' : 'Guardar'}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="rounded-lg border border-slate-200 px-4 py-2 text-slate-600 hover:bg-slate-50 flex items-center gap-1"
+              className="rounded-xl border border-white/10 px-4 py-2 text-slate-300 hover:bg-white/[0.04] flex items-center gap-1"
             >
               <X className="size-4" /> Cancelar
             </button>
-            {error && <span className="text-red-600 text-sm self-center">{error}</span>}
+            {error && <span className="text-red-300 text-sm">{error}</span>}
           </div>
         </form>
       )}
 
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div className="glass rounded-2xl overflow-hidden in">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-slate-500 text-left">
+          <thead className="text-slate-400 text-left border-b border-white/[0.06]">
             <tr>
-              <th className="px-4 py-3 font-medium">Producto</th>
-              <th className="px-4 py-3 font-medium">SKU</th>
-              <th className="px-4 py-3 font-medium">Stock</th>
-              <th className="px-4 py-3 font-medium">Costo</th>
-              <th className="px-4 py-3 font-medium">Venta</th>
-              <th className="px-4 py-3 font-medium">Margen</th>
-              <th className="px-4 py-3"></th>
+              <th className="px-5 py-3.5 font-medium">Producto</th>
+              <th className="px-5 py-3.5 font-medium">SKU</th>
+              <th className="px-5 py-3.5 font-medium">Stock</th>
+              <th className="px-5 py-3.5 font-medium">Costo</th>
+              <th className="px-5 py-3.5 font-medium">Venta</th>
+              <th className="px-5 py-3.5 font-medium">Margen</th>
+              <th className="px-5 py-3.5"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-white/[0.04]">
             {products.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-10 text-center text-slate-400">
+                <td colSpan={7} className="px-5 py-12 text-center text-slate-500">
                   Aún no hay productos. Crea el primero.
                 </td>
               </tr>
@@ -137,28 +139,28 @@ export default function ProductosPage() {
                       )
                     : 0;
                 return (
-                  <tr key={p.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-medium">{p.name}</td>
-                    <td className="px-4 py-3 text-slate-500">{p.sku}</td>
-                    <td className="px-4 py-3">
+                  <tr key={p.id} className="hover:bg-white/[0.025] transition">
+                    <td className="px-5 py-3.5 font-medium text-white">{p.name}</td>
+                    <td className="px-5 py-3.5 text-slate-400 font-mono text-xs">{p.sku}</td>
+                    <td className="px-5 py-3.5">
                       <span
-                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                           low
-                            ? 'bg-amber-100 text-amber-700'
-                            : 'bg-emerald-50 text-emerald-700'
+                            ? 'bg-amber-400/10 text-amber-400 ring-1 ring-amber-400/20'
+                            : 'bg-emerald-400/10 text-emerald-400 ring-1 ring-emerald-400/20'
                         }`}
                       >
                         {p.stock}
                         {low && ' · bajo'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-slate-500">${p.costPrice}</td>
-                    <td className="px-4 py-3 text-slate-500">${p.salePrice}</td>
-                    <td className="px-4 py-3 text-slate-500">{margin}%</td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-3.5 text-slate-400 font-mono">${p.costPrice}</td>
+                    <td className="px-5 py-3.5 text-slate-300 font-mono">${p.salePrice}</td>
+                    <td className="px-5 py-3.5 text-slate-400">{margin}%</td>
+                    <td className="px-5 py-3.5 text-right">
                       <button
                         onClick={() => restock(p)}
-                        className="inline-flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-medium"
+                        className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-medium"
                       >
                         <PackagePlus className="size-4" /> Reabastecer
                       </button>
@@ -174,25 +176,22 @@ export default function ProductosPage() {
   );
 }
 
-function Input({
+function Field({
   label,
-  hidden,
   ...props
 }: {
   label: string;
   type?: string;
   value: string;
-  hidden?: boolean;
   onChange: (e: { target: { value: string } }) => void;
 }) {
-  if (hidden) return null;
   return (
     <label className="block space-y-1.5">
-      <span className="text-sm text-slate-600">{label}</span>
+      <span className="text-sm text-slate-400">{label}</span>
       <input
         {...props}
         required
-        className="w-full rounded-lg border border-slate-200 px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+        className="w-full rounded-xl bg-white/[0.04] border border-white/10 px-3 py-2.5 text-white placeholder:text-slate-600 outline-none focus:border-emerald-400/60 focus:ring-2 focus:ring-emerald-400/20 transition"
       />
     </label>
   );

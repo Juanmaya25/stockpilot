@@ -11,7 +11,7 @@ interface CartLine {
 }
 
 const money = (n: number) =>
-  new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'USD' }).format(n);
+  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
 
 export default function VentasPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -30,9 +30,7 @@ export default function VentasPage() {
       const ex = c.find((l) => l.product.id === p.id);
       if (ex)
         return c.map((l) =>
-          l.product.id === p.id
-            ? { ...l, qty: Math.min(l.qty + 1, p.stock) }
-            : l,
+          l.product.id === p.id ? { ...l, qty: Math.min(l.qty + 1, p.stock) } : l,
         );
       return [...c, { product: p, qty: 1 }];
     });
@@ -40,16 +38,11 @@ export default function VentasPage() {
 
   function changeQty(id: string, qty: number) {
     setCart((c) =>
-      c
-        .map((l) => (l.product.id === id ? { ...l, qty } : l))
-        .filter((l) => l.qty > 0),
+      c.map((l) => (l.product.id === id ? { ...l, qty } : l)).filter((l) => l.qty > 0),
     );
   }
 
-  const total = cart.reduce(
-    (s, l) => s + Number(l.product.salePrice) * l.qty,
-    0,
-  );
+  const total = cart.reduce((s, l) => s + Number(l.product.salePrice) * l.qty, 0);
 
   async function checkout() {
     if (cart.length === 0) return;
@@ -60,7 +53,7 @@ export default function VentasPage() {
         items: cart.map((l) => ({ productId: l.product.id, quantity: l.qty })),
       });
       setCart([]);
-      setMsg('✅ Venta registrada — el stock se actualizó');
+      setMsg('✓ Venta registrada — el stock se actualizó');
       load();
       setTimeout(() => setMsg(''), 3500);
     } catch (e) {
@@ -71,85 +64,80 @@ export default function VentasPage() {
   }
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold">Punto de venta</h1>
-        <p className="text-slate-500">
-          Toca un producto para agregarlo a la venta.
-        </p>
+    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+      <header className="mb-6 in">
+        <h1 className="font-display text-3xl font-semibold text-white">
+          Punto de venta
+        </h1>
+        <p className="text-slate-400 mt-1">Toca un producto para agregarlo.</p>
       </header>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Products */}
-        <div className="lg:col-span-2 grid sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start">
+      <div className="grid lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 grid sm:grid-cols-2 xl:grid-cols-3 gap-3 content-start in">
           {products.map((p) => (
             <button
               key={p.id}
               onClick={() => add(p)}
               disabled={p.stock <= 0}
-              className="text-left bg-white rounded-xl border border-slate-200 p-4 hover:border-emerald-400 hover:shadow-sm transition disabled:opacity-50"
+              className="text-left glass glass-hover rounded-xl p-4 disabled:opacity-40"
             >
-              <p className="font-medium truncate">{p.name}</p>
-              <p className="text-sm text-slate-400">{p.sku}</p>
-              <div className="flex items-center justify-between mt-2">
-                <span className="font-semibold text-emerald-600">
+              <p className="font-medium text-white truncate">{p.name}</p>
+              <p className="text-xs text-slate-500 font-mono mt-0.5">{p.sku}</p>
+              <div className="flex items-center justify-between mt-3">
+                <span className="font-semibold text-grad font-mono">
                   {money(Number(p.salePrice))}
                 </span>
-                <span className="text-xs text-slate-400">stock {p.stock}</span>
+                <span className="text-xs text-slate-500">stock {p.stock}</span>
               </div>
             </button>
           ))}
           {products.length === 0 && (
-            <p className="text-slate-400 col-span-full">
-              No hay productos. Crea algunos en la sección Productos.
+            <p className="text-slate-500 col-span-full">
+              No hay productos. Crea algunos en Productos.
             </p>
           )}
         </div>
 
-        {/* Cart */}
-        <aside className="bg-white rounded-2xl border border-slate-200 p-5 h-fit lg:sticky lg:top-8">
-          <div className="flex items-center gap-2 font-semibold mb-4">
-            <ShoppingCart className="size-5 text-emerald-600" /> Venta actual
+        <aside className="glass rounded-2xl p-5 h-fit lg:sticky lg:top-6 in">
+          <div className="flex items-center gap-2 font-medium text-white mb-4">
+            <ShoppingCart className="size-5 text-emerald-400" /> Venta actual
           </div>
 
           {cart.length === 0 ? (
-            <p className="text-slate-400 text-sm py-8 text-center">
-              Carrito vacío
-            </p>
+            <p className="text-slate-500 text-sm py-8 text-center">Carrito vacío</p>
           ) : (
             <ul className="space-y-3 mb-4">
               {cart.map((l) => (
                 <li key={l.product.id} className="flex items-center gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">
+                    <p className="text-sm font-medium text-white truncate">
                       {l.product.name}
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500 font-mono">
                       {money(Number(l.product.salePrice))} c/u
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => changeQty(l.product.id, l.qty - 1)}
-                      className="size-6 grid place-items-center rounded border border-slate-200 hover:bg-slate-50"
+                      className="size-6 grid place-items-center rounded-lg border border-white/10 text-slate-300 hover:bg-white/[0.05]"
                     >
                       <Minus className="size-3" />
                     </button>
-                    <span className="w-6 text-center text-sm">{l.qty}</span>
+                    <span className="w-6 text-center text-sm font-mono text-white">
+                      {l.qty}
+                    </span>
                     <button
                       onClick={() =>
-                        changeQty(
-                          l.product.id,
-                          Math.min(l.qty + 1, l.product.stock),
-                        )
+                        changeQty(l.product.id, Math.min(l.qty + 1, l.product.stock))
                       }
-                      className="size-6 grid place-items-center rounded border border-slate-200 hover:bg-slate-50"
+                      className="size-6 grid place-items-center rounded-lg border border-white/10 text-slate-300 hover:bg-white/[0.05]"
                     >
                       <Plus className="size-3" />
                     </button>
                     <button
                       onClick={() => changeQty(l.product.id, 0)}
-                      className="size-6 grid place-items-center rounded text-red-500 hover:bg-red-50"
+                      className="size-6 grid place-items-center rounded-lg text-red-400 hover:bg-red-500/10"
                     >
                       <Trash2 className="size-3" />
                     </button>
@@ -159,23 +147,23 @@ export default function VentasPage() {
             </ul>
           )}
 
-          <div className="flex items-center justify-between border-t border-slate-100 pt-4 mb-4">
-            <span className="text-slate-500">Total</span>
-            <span className="text-xl font-bold">{money(total)}</span>
+          <div className="flex items-center justify-between border-t border-white/[0.06] pt-4 mb-4">
+            <span className="text-slate-400">Total</span>
+            <span className="text-2xl font-bold text-white font-mono">
+              {money(total)}
+            </span>
           </div>
 
           <button
             onClick={checkout}
             disabled={cart.length === 0 || saving}
-            className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white font-semibold py-2.5 transition disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950 font-semibold py-2.5 hover:opacity-90 transition disabled:opacity-40"
           >
             <Check className="size-4" />
             {saving ? 'Procesando…' : 'Cobrar'}
           </button>
 
-          {msg && (
-            <p className="text-sm text-center mt-3 text-slate-600">{msg}</p>
-          )}
+          {msg && <p className="text-sm text-center mt-3 text-emerald-400">{msg}</p>}
         </aside>
       </div>
     </div>

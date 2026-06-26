@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { Package, Loader2 } from 'lucide-react';
+import { Boxes, Loader2 } from 'lucide-react';
 import { api, setToken } from '@/lib/api';
 import type { AuthResponse } from '@/lib/types';
 
@@ -28,9 +28,7 @@ export default function LoginPage() {
     try {
       const path = mode === 'login' ? '/auth/login' : '/auth/register';
       const payload =
-        mode === 'login'
-          ? { email: form.email, password: form.password }
-          : form;
+        mode === 'login' ? { email: form.email, password: form.password } : form;
       const res = await api.post<AuthResponse>(path, payload);
       setToken(res.accessToken);
       router.push('/');
@@ -42,43 +40,46 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-slate-950 text-slate-100">
+    <div className="min-h-screen grid lg:grid-cols-2">
       {/* Brand side */}
-      <div className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-emerald-600/20 via-slate-950 to-slate-950 border-r border-white/5">
-        <div className="flex items-center gap-2 text-xl font-semibold">
-          <span className="grid place-items-center size-9 rounded-xl bg-emerald-500 text-slate-950">
-            <Package className="size-5" />
+      <div className="hidden lg:flex flex-col justify-between p-12">
+        <div className="flex items-center gap-2.5">
+          <span className="grid place-items-center size-9 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-400 text-slate-950 glow">
+            <Boxes className="size-5" />
           </span>
-          StockPilot
+          <span className="font-display text-lg font-semibold text-white">
+            StockPilot
+          </span>
         </div>
-        <div className="space-y-4">
-          <h1 className="text-4xl font-bold leading-tight">
-            Inventario, ventas y un{' '}
-            <span className="text-emerald-400">copiloto con IA</span>, en un
-            solo lugar.
+        <div className="space-y-5 max-w-md">
+          <h1 className="font-display text-5xl font-semibold leading-[1.05] text-white">
+            Inventario y ventas con un{' '}
+            <span className="text-grad">copiloto de IA</span>.
           </h1>
-          <p className="text-slate-400 max-w-md">
-            Gestiona productos y stock en tiempo real, registra ventas que
-            descuentan inventario al instante y pregúntale a la IA qué reordenar.
+          <p className="text-slate-400 text-lg">
+            Controla stock en tiempo real, cobra en segundos y pregúntale a la IA
+            qué reordenar — todo en un solo lugar.
           </p>
         </div>
-        <p className="text-sm text-slate-500">
-          Multi-tenant · JWT · PostgreSQL · NestJS · Next.js
+        <p className="text-sm text-slate-600 font-mono">
+          multi-tenant · JWT · PostgreSQL · NestJS · Next.js
         </p>
       </div>
 
       {/* Form side */}
       <div className="flex items-center justify-center p-6">
-        <form onSubmit={submit} className="w-full max-w-sm space-y-5">
-          <div className="lg:hidden flex items-center gap-2 text-xl font-semibold justify-center">
-            <span className="grid place-items-center size-9 rounded-xl bg-emerald-500 text-slate-950">
-              <Package className="size-5" />
+        <form onSubmit={submit} className="glass rounded-2xl p-8 w-full max-w-sm space-y-5">
+          <div className="lg:hidden flex items-center gap-2.5 justify-center mb-2">
+            <span className="grid place-items-center size-9 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-400 text-slate-950 glow">
+              <Boxes className="size-5" />
             </span>
-            StockPilot
+            <span className="font-display text-lg font-semibold text-white">
+              StockPilot
+            </span>
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold">
+            <h2 className="font-display text-2xl font-semibold text-white">
               {mode === 'login' ? 'Bienvenido de nuevo' : 'Crea tu cuenta'}
             </h2>
             <p className="text-slate-400 text-sm mt-1">
@@ -90,37 +91,15 @@ export default function LoginPage() {
 
           {mode === 'register' && (
             <>
-              <Field
-                label="Tu nombre"
-                value={form.name}
-                onChange={update('name')}
-                placeholder="Juan Maya"
-              />
-              <Field
-                label="Nombre del negocio"
-                value={form.businessName}
-                onChange={update('businessName')}
-                placeholder="Mi Tienda"
-              />
+              <Field label="Tu nombre" value={form.name} onChange={update('name')} placeholder="Juan Maya" />
+              <Field label="Nombre del negocio" value={form.businessName} onChange={update('businessName')} placeholder="Mi Tienda" />
             </>
           )}
-          <Field
-            label="Email"
-            type="email"
-            value={form.email}
-            onChange={update('email')}
-            placeholder="owner@mitienda.com"
-          />
-          <Field
-            label="Contraseña"
-            type="password"
-            value={form.password}
-            onChange={update('password')}
-            placeholder="mínimo 8 caracteres"
-          />
+          <Field label="Email" type="email" value={form.email} onChange={update('email')} placeholder="owner@mitienda.com" />
+          <Field label="Contraseña" type="password" value={form.password} onChange={update('password')} placeholder="mínimo 8 caracteres" />
 
           {error && (
-            <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+            <p className="text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
               {error}
             </p>
           )}
@@ -128,7 +107,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold py-2.5 transition disabled:opacity-60"
+            className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950 font-semibold py-2.5 hover:opacity-90 transition disabled:opacity-60"
           >
             {loading && <Loader2 className="size-4 animate-spin" />}
             {mode === 'login' ? 'Ingresar' : 'Crear cuenta'}
@@ -166,7 +145,7 @@ function Field({
       <input
         {...props}
         required
-        className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-slate-100 placeholder:text-slate-500 outline-none focus:border-emerald-500/60 focus:ring-2 focus:ring-emerald-500/20 transition"
+        className="w-full rounded-xl bg-white/[0.04] border border-white/10 px-3 py-2.5 text-white placeholder:text-slate-600 outline-none focus:border-emerald-400/60 focus:ring-2 focus:ring-emerald-400/20 transition"
       />
     </label>
   );

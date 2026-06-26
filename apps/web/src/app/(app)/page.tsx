@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   Package,
   AlertTriangle,
-  DollarSign,
+  Wallet,
   TrendingUp,
   type LucideIcon,
 } from 'lucide-react';
@@ -21,11 +21,32 @@ import { api } from '@/lib/api';
 import type { DashboardOverview } from '@/lib/types';
 
 const money = (n: number) =>
-  new Intl.NumberFormat('es-CO', {
+  new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     maximumFractionDigits: 0,
   }).format(n);
+
+/** Animated count-up number. */
+function Counter({ value, format }: { value: number; format: (n: number) => string }) {
+  const [n, setN] = useState(0);
+  const ref = useRef<number>(0);
+  useEffect(() => {
+    const start = performance.now();
+    const from = ref.current;
+    let raf = 0;
+    const tick = (t: number) => {
+      const p = Math.min((t - start) / 700, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setN(from + (value - from) * eased);
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else ref.current = value;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value]);
+  return <span className="font-mono tabular-nums">{format(n)}</span>;
+}
 
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardOverview | null>(null);
@@ -39,104 +60,137 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <header className="mb-8">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-slate-500">Resumen de tu negocio en tiempo real.</p>
+    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+      <header className="mb-8 in" style={{ animationDelay: '0ms' }}>
+        <h1 className="font-display text-3xl font-semibold text-white">
+          Dashboard
+        </h1>
+        <p className="text-slate-400 mt-1">
+          Tu negocio en tiempo real, con un copiloto que entiende tus datos.
+        </p>
       </header>
 
       {error && (
-        <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-6">
+        <p className="text-red-300 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 mb-6">
           {error}
         </p>
       )}
 
       {!data ? (
-        <div className="text-slate-400">Cargando…</div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="skeleton h-32" />
+          ))}
+        </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <Kpi
-              icon={DollarSign}
+              i={0}
+              icon={Wallet}
               label="Valor de inventario"
-              value={money(data.inventoryValue)}
-              tint="emerald"
+              node={<Counter value={data.inventoryValue} format={money} />}
             />
             <Kpi
+              i={1}
               icon={Package}
               label="Productos"
-              value={String(data.totalProducts)}
-              tint="sky"
+              node={<Counter value={data.totalProducts} format={(n) => String(Math.round(n))} />}
             />
             <Kpi
+              i={2}
               icon={TrendingUp}
               label="Ventas del mes"
-              value={money(data.monthRevenue)}
+              node={<Counter value={data.monthRevenue} format={money} />}
               sub={`${data.monthSalesCount} ventas`}
-              tint="violet"
             />
             <Kpi
+              i={3}
               icon={AlertTriangle}
               label="Stock bajo"
-              value={String(data.lowStockCount)}
-              sub="productos por reordenar"
-              tint="amber"
+              node={<Counter value={data.lowStockCount} format={(n) => String(Math.round(n))} />}
+              sub="por reordenar"
+              warn={data.lowStockCount > 0}
             />
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-6">
-            <section className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="font-semibold mb-4">Ventas últimos 7 días</h2>
+          <div className="grid lg:grid-cols-3 gap-4">
+            <section
+              className="lg:col-span-2 glass rounded-2xl p-6 in"
+              style={{ animationDelay: '260ms' }}
+            >
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="font-medium text-white">Ventas · últimos 7 días</h2>
+                <span className="text-xs text-emerald-400 bg-emerald-400/10 rounded-full px-2.5 py-1">
+                  live
+                </span>
+              </div>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={data.salesTrend}>
+                  <AreaChart data={data.salesTrend} margin={{ left: -18, right: 6 }}>
                     <defs>
                       <linearGradient id="rev" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#10b981" stopOpacity={0.4} />
-                        <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
+                        <stop offset="0%" stopColor="#34d399" stopOpacity={0.45} />
+                        <stop offset="100%" stopColor="#34d399" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
                     <XAxis
                       dataKey="date"
                       tickFormatter={(d: string) => d.slice(5)}
-                      stroke="#94a3b8"
-                      fontSize={12}
+                      stroke="#64748b"
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={false}
                     />
-                    <YAxis stroke="#94a3b8" fontSize={12} width={40} />
+                    <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
                     <Tooltip
-                      formatter={(v: number) => money(v)}
-                      labelStyle={{ color: '#0f172a' }}
+                      formatter={(v: number) => [money(v), 'Ingresos']}
+                      contentStyle={{
+                        background: '#0c0e14',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: 12,
+                        color: '#fff',
+                      }}
+                      labelStyle={{ color: '#94a3b8' }}
+                      cursor={{ stroke: 'rgba(52,211,153,0.3)' }}
                     />
                     <Area
                       type="monotone"
                       dataKey="revenue"
-                      stroke="#10b981"
-                      strokeWidth={2}
+                      stroke="#34d399"
+                      strokeWidth={2.5}
                       fill="url(#rev)"
+                      dot={false}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </section>
 
-            <section className="bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="font-semibold mb-4">Más vendidos (7 días)</h2>
+            <section className="glass rounded-2xl p-6 in" style={{ animationDelay: '340ms' }}>
+              <h2 className="font-medium text-white mb-5">Más vendidos</h2>
               {data.topProducts.length === 0 ? (
-                <p className="text-slate-400 text-sm">Aún no hay ventas.</p>
+                <p className="text-slate-500 text-sm">Aún no hay ventas.</p>
               ) : (
-                <ul className="space-y-3">
-                  {data.topProducts.map((p, i) => (
-                    <li key={p.id} className="flex items-center gap-3">
-                      <span className="grid place-items-center size-7 rounded-lg bg-emerald-50 text-emerald-700 text-sm font-semibold">
-                        {i + 1}
-                      </span>
-                      <span className="flex-1 truncate text-sm">{p.name}</span>
-                      <span className="text-sm font-semibold text-slate-700">
-                        {p.unitsSold}
-                      </span>
-                    </li>
-                  ))}
+                <ul className="space-y-4">
+                  {data.topProducts.map((p, i) => {
+                    const max = data.topProducts[0].unitsSold || 1;
+                    return (
+                      <li key={p.id}>
+                        <div className="flex items-center justify-between text-sm mb-1.5">
+                          <span className="text-slate-200 truncate">{p.name}</span>
+                          <span className="font-mono text-slate-400">{p.unitsSold}</span>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-white/[0.05] overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400"
+                            style={{ width: `${(p.unitsSold / max) * 100}%` }}
+                          />
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </section>
@@ -147,36 +201,38 @@ export default function DashboardPage() {
   );
 }
 
-const tints: Record<string, string> = {
-  emerald: 'bg-emerald-50 text-emerald-600',
-  sky: 'bg-sky-50 text-sky-600',
-  violet: 'bg-violet-50 text-violet-600',
-  amber: 'bg-amber-50 text-amber-600',
-};
-
 function Kpi({
+  i,
   icon: Icon,
   label,
-  value,
+  node,
   sub,
-  tint,
+  warn,
 }: {
+  i: number;
   icon: LucideIcon;
   label: string;
-  value: string;
+  node: React.ReactNode;
   sub?: string;
-  tint: string;
+  warn?: boolean;
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-5">
+    <div
+      className="glass glass-hover rounded-2xl p-5 in"
+      style={{ animationDelay: `${i * 70 + 60}ms` }}
+    >
       <div
-        className={`grid place-items-center size-10 rounded-xl mb-3 ${tints[tint]}`}
+        className={`grid place-items-center size-10 rounded-xl mb-4 ${
+          warn
+            ? 'bg-amber-400/10 text-amber-400'
+            : 'bg-emerald-400/10 text-emerald-400'
+        }`}
       >
         <Icon className="size-5" />
       </div>
-      <p className="text-2xl font-bold">{value}</p>
-      <p className="text-sm text-slate-500">{label}</p>
-      {sub && <p className="text-xs text-slate-400 mt-0.5">{sub}</p>}
+      <p className="text-2xl font-semibold text-white">{node}</p>
+      <p className="text-sm text-slate-400 mt-0.5">{label}</p>
+      {sub && <p className="text-xs text-slate-500 mt-0.5">{sub}</p>}
     </div>
   );
 }

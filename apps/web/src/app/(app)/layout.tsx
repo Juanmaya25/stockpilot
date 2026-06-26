@@ -9,13 +9,14 @@ import {
   ShoppingCart,
   Sparkles,
   LogOut,
+  Boxes,
 } from 'lucide-react';
 import { getToken, clearToken } from '@/lib/api';
 
 const nav = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/productos', label: 'Productos', icon: Package },
-  { href: '/ventas', label: 'Ventas', icon: ShoppingCart },
+  { href: '/ventas', label: 'Punto de venta', icon: ShoppingCart },
   { href: '/asistente', label: 'Asistente IA', icon: Sparkles },
 ];
 
@@ -29,7 +30,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     else setReady(true);
   }, [router]);
 
-  if (!ready) return null;
+  if (!ready) {
+    return (
+      <div className="min-h-screen grid place-items-center">
+        <div className="size-8 rounded-full border-2 border-white/10 border-t-emerald-400 animate-spin" />
+      </div>
+    );
+  }
 
   function logout() {
     clearToken();
@@ -37,29 +44,36 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-50 text-slate-900">
-      <aside className="w-60 shrink-0 bg-slate-950 text-slate-300 flex flex-col">
-        <div className="flex items-center gap-2 px-5 h-16 text-white font-semibold border-b border-white/5">
-          <span className="grid place-items-center size-8 rounded-lg bg-emerald-500 text-slate-950">
-            <Package className="size-4" />
+    <div className="min-h-screen flex gap-0 p-3">
+      <aside className="glass rounded-2xl w-60 shrink-0 flex flex-col p-3 sticky top-3 h-[calc(100vh-1.5rem)]">
+        <div className="flex items-center gap-2.5 px-2 h-14">
+          <span className="relative grid place-items-center size-9 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-400 text-slate-950 glow">
+            <Boxes className="size-5" />
           </span>
-          StockPilot
+          <span className="font-display text-lg font-semibold text-white">
+            StockPilot
+          </span>
         </div>
 
-        <nav className="flex-1 p-3 space-y-1">
+        <nav className="flex-1 mt-4 space-y-1">
           {nav.map(({ href, label, icon: Icon }) => {
             const active = pathname === href;
             return (
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
+                className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
                   active
-                    ? 'bg-emerald-500 text-slate-950 font-medium'
-                    : 'hover:bg-white/5 hover:text-white'
+                    ? 'text-white bg-gradient-to-r from-emerald-400/15 to-transparent'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
                 }`}
               >
-                <Icon className="size-4" />
+                {active && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-full bg-gradient-to-b from-emerald-400 to-cyan-400" />
+                )}
+                <Icon
+                  className={`size-4 ${active ? 'text-emerald-400' : ''}`}
+                />
                 {label}
               </Link>
             );
@@ -68,7 +82,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
         <button
           onClick={logout}
-          className="flex items-center gap-3 px-5 h-14 text-sm border-t border-white/5 hover:text-white transition"
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 hover:text-white hover:bg-white/[0.04] transition"
         >
           <LogOut className="size-4" />
           Cerrar sesión
