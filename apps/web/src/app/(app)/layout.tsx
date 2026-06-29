@@ -12,6 +12,7 @@ import {
   Boxes,
 } from 'lucide-react';
 import { getToken, clearToken } from '@/lib/api';
+import { DEMO } from '@/lib/demo';
 
 const nav = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -53,6 +54,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <span className="font-display text-lg font-semibold text-white">
             StockPilot
           </span>
+          {DEMO && (
+            <span className="ml-auto text-[10px] font-mono tracking-wider text-emerald-400 bg-emerald-400/10 ring-1 ring-emerald-400/20 rounded-full px-2 py-0.5">
+              DEMO
+            </span>
+          )}
         </div>
 
         <nav className="flex-1 mt-4 space-y-1">

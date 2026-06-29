@@ -145,7 +145,7 @@ export default function DashboardPage() {
                     />
                     <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
                     <Tooltip
-                      formatter={(v: number) => [money(v), 'Ingresos']}
+                      formatter={(v) => [money(Number(v ?? 0)), 'Ingresos']}
                       contentStyle={{
                         background: '#0c0e14',
                         border: '1px solid rgba(255,255,255,0.1)',

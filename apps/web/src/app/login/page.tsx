@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Boxes, Loader2 } from 'lucide-react';
 import { api, setToken } from '@/lib/api';
+import { DEMO } from '@/lib/demo';
 import type { AuthResponse } from '@/lib/types';
 
 export default function LoginPage() {
@@ -20,6 +21,11 @@ export default function LoginPage() {
 
   const update = (key: keyof typeof form) => (e: { target: { value: string } }) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  function enterDemo() {
+    setToken('demo-token');
+    router.push('/');
+  }
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -88,6 +94,25 @@ export default function LoginPage() {
                 : 'Registra tu negocio en segundos'}
             </p>
           </div>
+
+          {DEMO && (
+            <div className="space-y-3">
+              <button
+                type="button"
+                onClick={enterDemo}
+                className="w-full rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950 font-semibold py-2.5 hover:opacity-90 transition"
+              >
+                Entrar a la demo →
+              </button>
+              <p className="text-xs text-slate-500 text-center">
+                Demo con datos de muestra en tu navegador. También puedes registrarte
+                o entrar con cualquier dato.
+              </p>
+              <div className="flex items-center gap-3 text-xs text-slate-600">
+                <span className="h-px flex-1 bg-white/10" /> o <span className="h-px flex-1 bg-white/10" />
+              </div>
+            </div>
+          )}
 
           {mode === 'register' && (
             <>

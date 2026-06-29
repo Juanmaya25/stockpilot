@@ -1,3 +1,5 @@
+import { DEMO, demoRequest } from './demo';
+
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
 const TOKEN_KEY = 'sp_token';
 
@@ -13,6 +15,12 @@ export function clearToken(): void {
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  if (DEMO) {
+    const method = (options.method ?? 'GET').toUpperCase();
+    const body = options.body ? JSON.parse(options.body as string) : undefined;
+    return demoRequest<T>(path, method, body);
+  }
+
   const token = getToken();
   const res = await fetch(`${BASE}${path}`, {
     ...options,
