@@ -8,6 +8,9 @@
 [![Web](https://img.shields.io/badge/Web-Next.js_+_TypeScript-000000?logo=nextdotjs&logoColor=white)](#)
 [![DB](https://img.shields.io/badge/DB-PostgreSQL_+_Prisma-4169E1?logo=postgresql&logoColor=white)](#)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Live demo](https://img.shields.io/badge/Live_demo-juanmaya25.github.io/stockpilot-22c55e?logo=githubpages&logoColor=white)](https://juanmaya25.github.io/stockpilot/)
+
+> ▶️ **Live demo:** **https://juanmaya25.github.io/stockpilot/** — click _“Entrar a la demo”_ and explore the dashboard, inventory, POS and AI assistant. (This is the frontend running as a static SPA with seeded sample data in your browser; the full NestJS + PostgreSQL backend lives in this repo and runs locally via Docker.)
 
 > ⚙️ **Status:** working full-stack app — backend, frontend, AI assistant and seeded demo data all running. See the [Roadmap](#-roadmap).
 
